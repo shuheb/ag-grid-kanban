@@ -1,38 +1,84 @@
-.App {
-  text-align: center;
+html, body, #root {
+  height: 100%;
+  width: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.ag-theme-alpine {
+  /* --ag-cell-horizontal-padding: 8px; */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.drag-card {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.ag-cell {
+  background-color: rgb(249, 249, 248);
+}
+
+.card {
+  background-color: rgb(255, 255, 255);
+  /* height: 100px; */
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.card > div {
+  padding: 8px;
+}
+
+.card-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.card-content > span {
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.card-content > span:first-child {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+.card-content > span:nth-child(2) {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.tags {
+  margin-top: 4px;
+  display: flex;
+  gap: 8px;
+}
+
+.tags > span {
+  font-size: 12px;
+  padding: 0px 4px;
+  border-radius: 4px;
+  line-height: 20px;
+}
+
+.bg-yellow {
+  background-color: #fbf3db;
+}
+
+.bg-red {
+  background-color: #fbe4e4;
+}
+
+.bg-pink {
+  background-color: #f4dfeb;
+}
+
+.bg-orange {
+  background-color: #faebdd;
+}
+
+.bg-purple {
+  background-color: #eae4f2;
 }

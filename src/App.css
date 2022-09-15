@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
 }
@@ -19,6 +21,7 @@ html, body, #root {
 }
 
 .card {
+cursor: grab;
   background-color: rgb(255, 255, 255);
   /* height: 100px; */
   width: 100%;
@@ -44,14 +47,21 @@ html, body, #root {
   line-height: 20px;
 }
 
-.card-content > span:nth-child(2) {
+.card-content > :not(:first-child) {
   margin-top: 8px;
+}
+
+.card-content > span:nth-child(2) {
   font-size: 12px;
   line-height: 20px;
 }
 
+.user > :last-child {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 .tags {
-  margin-top: 4px;
   display: flex;
   gap: 8px;
 }

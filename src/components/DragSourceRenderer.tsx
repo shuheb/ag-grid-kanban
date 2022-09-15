@@ -1,56 +1,62 @@
-import { ICellRendererParams } from "@ag-grid-community/core";
-import React, { useCallback } from "react";
+import { ICellRendererParams } from "ag-grid-community";
+import React, { memo, useContext } from "react";
+import {
+  ICard,
+  KanbanContext,
+  Stage,
+  useKanban,
+} from "../context/KanbanContext";
 import Card from "./Card";
 
-const DragSourceRenderer = (params: ICellRendererParams) => {
-  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+const DragSourceRenderer = memo((params: ICellRendererParams) => {
+  const { dispatch } = useKanban();
+  const columnId = params.column?.getColId() as Stage;
+
+  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     var types = event.dataTransfer.types;
     var dragSupported = types.length;
     if (dragSupported) {
       event.dataTransfer.dropEffect = "move";
     }
     event.preventDefault();
-  }, []);
+  };
 
-  const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+  const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    var textData = JSON.parse(event.dataTransfer.getData("text/plain"));
-    // create new row
-    if (params.data.user !== textData.data.user) {
-      console.log(params.data);
-      params.api.applyTransaction({
-        update: [
-          {
-            ...textData.data,
-            user: params.data.user,
-            state: params.column?.getColId(),
-          },
-        ],
-      });
-    }
-    // update the row
-    if (params.rowIndex === textData.rowIndex) {
-      const colId = params.column?.getColId();
-      const node = params.node;
+    const { card, rowId, rowIndex } = JSON.parse(
+      event.dataTransfer.getData("text/plain")
+    );
 
-      node.setData({ ...textData.data, state: colId });
-    }
-  }, []);
+    dispatch({
+      type: "update",
+      from: {
+        rowId,
+        rowIndex,
+        cardId: card.cardId,
+        stage: card.stage,
+      },
+      to: {
+        stage: columnId,
+        rowIndex: params.rowIndex,
+        rowId: params.data.rowId,
+      },
+    });
+    params.api.redrawRows({ rowNodes: [params.node] });
+  };
 
-  const onDragStart = useCallback(
-    (dragEvent: React.DragEvent<HTMLDivElement>) => {
-      console.log("onDragStart");
-      var userAgent = window.navigator.userAgent;
-      dragEvent.dataTransfer.setData(
-        "text/plain",
-        JSON.stringify({ data: params.data, rowIndex: params.rowIndex })
-      );
-    },
-    []
-  );
+  const onDragStart = (dragEvent: React.DragEvent<HTMLDivElement>) => {
+    dragEvent.dataTransfer.setData(
+      "text/plain",
+      JSON.stringify({
+        card: params.data.cards.find((card: ICard) => card.stage === columnId),
+        rowId: params.data.rowId,
+        rowIndex: params.rowIndex,
+      })
+    );
+  };
+  const card = params.data.cards.find((card: ICard) => card.stage === columnId);
+  const isDraggable = !!card;
 
-  const columnId = params.column?.getColId();
-  const isDraggable = columnId === params.data.state;
   return (
     <div
       className="drag-card"
@@ -58,11 +64,9 @@ const DragSourceRenderer = (params: ICellRendererParams) => {
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      {params.data.state === columnId && (
-        <Card draggable={isDraggable} data={params.data} />
-      )}
+      {card && <Card draggable={isDraggable} data={card} />}
     </div>
   );
-};
+});
 
 export default DragSourceRenderer;
